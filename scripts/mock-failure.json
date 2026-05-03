@@ -1,0 +1,51 @@
+{
+  "scenario": "RDBMS outage cascading to MCP failure",
+  "description": "Simulates a primary database going down, causing MCP hosts to fail as they lose their data source",
+  "events": [
+    {
+      "step": 1,
+      "delay_ms": 0,
+      "signal": {
+        "componentId": "RDBMS_PRIMARY",
+        "componentType": "RDBMS",
+        "message": "Connection pool exhausted - max connections reached"
+      }
+    },
+    {
+      "step": 2,
+      "delay_ms": 500,
+      "signal": {
+        "componentId": "RDBMS_PRIMARY",
+        "componentType": "RDBMS",
+        "message": "Write timeout after 30s - disk I/O saturation"
+      }
+    },
+    {
+      "step": 3,
+      "delay_ms": 1000,
+      "signal": {
+        "componentId": "MCP_HOST_01",
+        "componentType": "MCP",
+        "message": "Cannot reach data source - RDBMS_PRIMARY unresponsive"
+      }
+    },
+    {
+      "step": 4,
+      "delay_ms": 1500,
+      "signal": {
+        "componentId": "MCP_HOST_02",
+        "componentType": "MCP",
+        "message": "Failover attempted - secondary RDBMS also unreachable"
+      }
+    },
+    {
+      "step": 5,
+      "delay_ms": 2000,
+      "signal": {
+        "componentId": "CACHE_CLUSTER_01",
+        "componentType": "CACHE",
+        "message": "Cache invalidation storm triggered by RDBMS failure"
+      }
+    }
+  ]
+}
