@@ -1,8 +1,8 @@
-import { Router, Request, Response } from 'express'
 import { WorkItemService } from '../workflow/WorkItemService'
 import { WorkItemStatus } from '../workflow/states'
+import express, { Request, Response } from 'express'
 
-const router = Router()
+const router = express.Router()
 const service = new WorkItemService()
 
 router.get('/', async (req: Request, res: Response) => {
